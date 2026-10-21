@@ -1,0 +1,28 @@
+[package]
+name = "pdf-draw"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1"
+eframe = "0.37"
+# Used only to count the q/Q nesting of a page's original content before saving.
+lopdf = "0.45"
+# `image_latest` is a default feature we never use; `thread_safe` makes Pdfium/PdfDocument
+# Send + Sync so the binding can live in a static.
+pdfium-render = { version = "0.9.4", default-features = false, features = ["pdfium_latest", "thread_safe"] }
+rfd = "0.17"
+
+# Needed only to turn off winit's default macOS menu, whose Quit item would bypass the
+# "Discard your drawing?" guard. eframe does not re-export winit.
+[target.'cfg(target_os = "macos")'.dependencies]
+winit = "0.30"
+
+[dev-dependencies]
+# eframe: Harness::new_eframe; wgpu + snapshot: render the app to PNG screenshots.
+egui_kittest = { version = "0.37", features = ["eframe", "wgpu", "snapshot"] }
+
+# The command is `signit`; the library (used by the tests) keeps the name pdf_draw.
+[[bin]]
+name = "signit"
+path = "src/main.rs"
